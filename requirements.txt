@@ -1,0 +1,7 @@
+ollama
+numpy
+langchain
+langchain_community
+langchain-core
+Pillow
+PyMuPDF

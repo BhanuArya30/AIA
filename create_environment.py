@@ -22,27 +22,52 @@ def update_pip(env_name):
     """
     Upgrades pip inside the virtual environment.
     """
-    pip_executable = get_pip_executable(env_name)
-    subprocess.run([pip_executable, 'install', '--upgrade', 'pip'], check=True)
+    # pip_executable = get_pip_executable(env_name)
+    python_executable = os.path.join(env_name, 'Scripts', 'python.exe') if os.name == 'nt' else os.path.join(env_name, 'bin', 'python')
+    subprocess.run([python_executable, '-m', 'pip', 'install', '--upgrade', 'pip'], check=True)
     print("Pip has been upgraded inside the virtual environment.")
+
+
 
 def install_dependencies(env_name, requirements_file):
     """
     Installs dependencies listed in the requirements file inside the virtual environment.
     """
     pip_executable = get_pip_executable(env_name)
-    subprocess.run([pip_executable, 'install', '-r', requirements_file], check=True)
+
+    # Ensure pip reads the requirements file as UTF-8
+    env = os.environ.copy()
+    env["PYTHONUTF8"] = "1"  # Forces Python to use UTF-8
+
+    result = subprocess.run(
+        [pip_executable, 'install', '-r', requirements_file], 
+        check=True, 
+        text=True,        # Capture output as text (not bytes)
+        encoding="utf-8", # Ensure UTF-8 encoding
+        errors="replace", # Replace any invalid characters instead of failing
+        env=env
+    )
+    print(result.stdout)
     print(f"Dependencies from '{requirements_file}' have been installed.")
+
 
 def run_ollama_pull():
     """
     Runs the ollama pull command to download the specified model.
     """
     try:
-        result = subprocess.run(['ollama', 'pull', 'llama3.2-vision'], check=True, capture_output=True, text=True)
+        result = subprocess.run(
+            ['ollama', 'pull', 'llama3.2-vision'], 
+            check=True, 
+            capture_output=True, 
+            text=True, 
+            encoding="utf-8", 
+            errors="replace"
+        )
         print(result.stdout)
     except subprocess.CalledProcessError as e:
-        print(f"An error occurred while pulling the model: {e.stderr}")
+        print(f"An error occurred while pulling the model: {e.stderr.encode('utf-8', 'replace').decode('utf-8')}")
+
 
 if __name__ == "__main__":
     env_name = 'aia_venv'

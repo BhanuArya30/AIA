@@ -1,8 +1,15 @@
+import os
 import logging
 from io import BytesIO
 from PIL import Image
 from ollama import generate
 from typing import Optional, Union, List
+
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils import adjust_path_for_os
+
 # Set up logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -40,21 +47,19 @@ def post_process_response(responses: Optional[List[dict]]) -> str:
     return full_response
 
 
-def main():
-    # provide inputs
-    prompt = "what is the change? summarize in few lines."
-    input_image = r"data\combined.jpeg"
+def simplify_text(input_image, prompt):
+    # adjust input path for OS
+    input_image = adjust_path_for_os(input_image)
     # preprocess inputs
     image_bytes = convert_image_to_bytes(input_image)
     # call llm
     llm_response = call_llm(prompt, image_bytes, model="llama3.2-vision")
     # post proces response
     response = post_process_response(llm_response)
-    # save response
-    # print('*'*30)
-    # print(response)
-    # print('*'*30)
+
     
 
 if __name__ == "__main__":
-    main()
+    prompt = "what are the changes? summarize"
+    input_image = r"data\combined.jpeg"
+    simplify_text(input_image, prompt)

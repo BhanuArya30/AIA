@@ -13,9 +13,10 @@ from utils import adjust_path_for_os
 # Set up logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def convert_image_to_bytes(
+def pre_process_image(
     image_file: Union[str, bytes], format: str = "JPEG"
 ) -> Optional[bytes]:
+    # convert image to bytes
     try:
         with Image.open(image_file) as img:
             with BytesIO() as buffer:
@@ -47,11 +48,11 @@ def post_process_response(responses: Optional[List[dict]]) -> str:
     return full_response
 
 
-def simplify_text(input_image, prompt):
+def simplify_image(input_image, prompt):
     # adjust input path for OS
     input_image = adjust_path_for_os(input_image)
     # preprocess inputs
-    image_bytes = convert_image_to_bytes(input_image)
+    image_bytes = pre_process_image(input_image)
     # call llm
     llm_response = call_llm(prompt, image_bytes, model="llama3.2-vision")
     # post proces response
@@ -62,4 +63,4 @@ def simplify_text(input_image, prompt):
 if __name__ == "__main__":
     prompt = "what are the changes? summarize"
     input_image = r"data\combined.jpeg"
-    simplify_text(input_image, prompt)
+    simplify_image(input_image, prompt)

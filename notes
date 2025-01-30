@@ -1,1 +1,11 @@
 while creating package in setup.py > update imports on simply.py > remove setting explicit path
+
+
+
+### create conda environment
+python -m pip install --upgrade pip setuptools wheel
+conda create -n aia_env python # or any preferred Python version
+conda activate aia_env
+python -m pip install --upgrade pip setuptools wheel
+pip install ollama langchain langchain-community langchain-core Pillow PyMuPDF
+

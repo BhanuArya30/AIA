@@ -60,10 +60,10 @@ def simplify_image(input_image, prompt):
 
 
 if __name__ == "__main__":
-    prompt = "what are the changes? summarize"
-    input_image = r"data/combined.jpeg"
+    # prompt = "what are the changes? summarize"
+    # input_image = r"data/combined.jpeg"
 
-    # prompt = "what is the account balance?"
-    # input_image = r"data/barclays_stmt.jpg"
+    prompt = "what is the account balance?"
+    input_image = r"data/barclays_stmt.jpg"
 
     simplify_image(input_image, prompt)
